@@ -85,18 +85,38 @@ async function sendOTP(contactNumber, otp) {
 export const request = async(req, res) =>{
   try {
     // Validate request body
+    console.log(req.body)
+
     const { error } = loginRequestValidation.validate(req.body);
     if (error) {
       return res.status(400).json({ success: false, message: error.details[0].message });
     }
 
+    const contactNumber = req.body.contactNumber;
+    let normalizedNumber = contactNumber;
+    let alternativeFormat = '';
+
+    // If number starts with +92, create an alternative with 0
+    if (contactNumber.startsWith('+92')) {
+      alternativeFormat = '0' + contactNumber.substring(3); // +92301... -> 0301...
+    } 
+    // If number starts with 0, create an alternative with +92
+    else if (contactNumber.startsWith('0')) {
+      alternativeFormat = '+92' + contactNumber.substring(1); // 0301... -> +92301...
+    }
+
     // Check if user exists with given contact number
-    let user = await User.findOne({ contactNumber: req.body.contactNumber });
-    
+    let user = await User.findOne({
+      $or: [
+        { contactNumber: normalizedNumber },
+        { contactNumber: alternativeFormat }
+      ]
+    });
+
     // If user doesn't exist, create a minimal placeholder user
     if (!user) {
       user = new User({
-        contactNumber: req.body.contactNumber,
+        contactNumber: req.body.contactNumber, 
         isProfileComplete: false
       });
       await user.save();
@@ -104,7 +124,6 @@ export const request = async(req, res) =>{
 
     // Generate OTP
     const otp = generateOTP();
-    
     // Set OTP expiration (10 minutes)
     const otpExpires = new Date();
     otpExpires.setMinutes(otpExpires.getMinutes() + 10);
@@ -140,8 +159,26 @@ export const verify = async (req, res) => {
       return res.status(400).json({ success: false, message: error.details[0].message });
     }
 
+    const contactNumber = req.body.contactNumber;
+    let alternativeFormat = '';
+
+    // If number starts with +92, create an alternative with 0
+    if (contactNumber.startsWith('+92')) {
+      alternativeFormat = '0' + contactNumber.substring(3); // +92301... -> 0301...
+    } 
+    // If number starts with 0, create an alternative with +92
+    else if (contactNumber.startsWith('0')) {
+      alternativeFormat = '+92' + contactNumber.substring(1); // 0301... -> +92301...
+    }
+
     // Check if user exists with given contact number
-    const user = await User.findOne({ contactNumber: req.body.contactNumber });
+    const user = await User.findOne({
+      $or: [
+        { contactNumber: contactNumber },
+        { contactNumber: alternativeFormat }
+      ]
+    });
+
     if (!user) {
       return res.status(400).json({ success: false, message: 'User not found with this contact number' });
     }
@@ -201,14 +238,34 @@ export const verify = async (req, res) => {
 
 export const completeProfile = async (req, res) => {
   try {
+
     // Validate request body
     const { error } = completeProfileValidation.validate(req.body);
     if (error) {
       return res.status(400).json({ success: false, message: error.details[0].message });
     }
 
+    const contactNumber = req.body.contactNumber;
+    let alternativeFormat = '';
+
+    // If number starts with +92, create an alternative with 0
+    if (contactNumber.startsWith('+92')) {
+      alternativeFormat = '0' + contactNumber.substring(3); // +92301... -> 0301...
+    } 
+    // If number starts with 0, create an alternative with +92
+    else if (contactNumber.startsWith('0')) {
+      alternativeFormat = '+92' + contactNumber.substring(1); // 0301... -> +92301...
+    }
+
     // Check if user exists with given contact number
-    const user = await User.findOne({ contactNumber: req.body.contactNumber });
+    const user = await User.findOne({
+      $or: [
+        { contactNumber: contactNumber },
+        { contactNumber: alternativeFormat }
+      ]
+    });
+    
+    
     if (!user) {
       return res.status(400).json({ success: false, message: 'User not found with this contact number' });
     }
@@ -226,17 +283,25 @@ export const completeProfile = async (req, res) => {
     }
 
     // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    // const salt = await bcrypt.genSalt(10);
+    // const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+    const localDate = new Date(req.body.dateOfBirth);
+    // Force the date to be interpreted as UTC
+    const utcDate = new Date(Date.UTC(
+      localDate.getFullYear(),
+      localDate.getMonth(),
+      localDate.getDate()
+    ));
 
     // Update user profile
     user.name = req.body.name;
     user.email = req.body.email;
     user.address = req.body.address;
     user.city = req.body.city;
-    user.dateOfBirth = new Date(req.body.dateOfBirth);
+    user.dateOfBirth = new Date(utcDate);
     user.medicalHistory = req.body.medicalHistory || '';
-    user.password = hashedPassword;
+    // user.password = hashedPassword;
     user.isProfileComplete = true;
 
     // Save updated user
