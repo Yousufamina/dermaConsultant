@@ -8,4 +8,5 @@ authRoutes.post("/request", request);
 authRoutes.post("/verify", verify);
 authRoutes.post("/profile/complete", completeProfile);
 
+
 export default authRoutes;

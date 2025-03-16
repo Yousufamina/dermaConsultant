@@ -2,9 +2,11 @@ import User from '../models/User.js';
 import joi from 'joi';
 import dotenv from 'dotenv';
 import twilio from 'twilio';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
+const JWT_SECRET = process.env.JWT_SECRET_KEY; 
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
@@ -82,8 +84,9 @@ async function sendOTP(contactNumber, otp) {
   }
 }
 
-export const request = async(req, res) =>{
+ export const request = async(req, res) =>{
   try {
+    
     // Validate request body
     console.log(req.body)
 
@@ -220,15 +223,22 @@ export const verify = async (req, res) => {
       medicalHistory: user.medicalHistory
     };
 
-    // In a production app, you would generate a JWT token here
-    // const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+    // Create and sign the JWT token
+    const payload = {
+      userId: user._id
+    };
+    
+    const token = jwt.sign(
+      payload, 
+      JWT_SECRET
+    );
     
     res.status(200).json({
       success: true,
       message: 'Login successful',
       isProfileComplete: true,
       user: userData,
-      // token: token
+      token: token
     });
 
   } catch (err) {
@@ -282,10 +292,6 @@ export const completeProfile = async (req, res) => {
       } 
     }
 
-    // Hash password
-    // const salt = await bcrypt.genSalt(10);
-    // const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
     const localDate = new Date(req.body.dateOfBirth);
     // Force the date to be interpreted as UTC
     const utcDate = new Date(Date.UTC(
@@ -301,7 +307,6 @@ export const completeProfile = async (req, res) => {
     user.city = req.body.city;
     user.dateOfBirth = new Date(utcDate);
     user.medicalHistory = req.body.medicalHistory || '';
-    // user.password = hashedPassword;
     user.isProfileComplete = true;
 
     // Save updated user
@@ -318,128 +323,24 @@ export const completeProfile = async (req, res) => {
       dateOfBirth: user.dateOfBirth,
       medicalHistory: user.medicalHistory
     };
+      // Create and sign the JWT token
+    const payload = {
+      userId: user._id
+    };
 
-    // In a production app, you would generate a JWT token here
-    // const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+    const token = jwt.sign(
+      payload, 
+      JWT_SECRET
+    );
     
     res.status(200).json({
       success: true,
       message: 'Profile completed successfully',
       user: userData,
-      // token: token
+      token: token
     });
 
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server Error', error: err.message });
   }
 }
-
-
-// export const signUp = async (req, res) => {
-
-//     try {
-//         // Validate request body
-//         const { error } = signupValidation.validate(req.body);
-//         if (error) {
-//           return res.status(400).json({ success: false, message: error.details[0].message });
-//         }
-    
-//         // Check if user with email already exists
-//         // const emailExists = await User.findOne({ email: req.body.email });
-//         // if (emailExists) {
-//         //   return res.status(400).json({ success: false, message: 'Email already registered' });
-//         // }
-    
-//         // Check if user with contact number already exists
-//         const contactExists = await User.findOne({ contactNumber: req.body.contactNumber });
-//         if (contactExists) {
-//           return res.status(400).json({ success: false, message: 'Contact number already registered' });
-//         }
-    
-//         // Hash password
-//         // const salt = await bcrypt.genSalt(10);
-//         // const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    
-//         // Create new user
-//         const user = new User({
-//           name: req.body.name,
-//           email: req.body.email,
-//           contactNumber: req.body.contactNumber,
-//           address: req.body.address,
-//           city: req.body.city,
-//           dateOfBirth: new Date(req.body.dateOfBirth),
-//           medicalHistory: req.body.medicalHistory || '',
-//           password: hashedPassword
-//         });
-    
-//         // Save user to database
-//         const savedUser = await user.save();
-        
-//         // Return success response without password
-//         const userResponse = {
-//           _id: savedUser._id,
-//           name: savedUser.name,
-//           email: savedUser.email,
-//           contactNumber: savedUser.contactNumber,
-//           address: savedUser.address,
-//           city: savedUser.city,
-//           dateOfBirth: savedUser.dateOfBirth,
-//           medicalHistory: savedUser.medicalHistory
-//         };
-    
-//         res.status(201).json({ 
-//           success: true, 
-//           message: 'User registered successfully', 
-//           user: userResponse 
-//         });
-    
-//     } catch (err) {
-//         res.status(500).json({ success: false, message: 'Server Error', error: err.message });
-//     }
-    
-// }
-
-// export const login = async(req ,res) =>{
-//   try {    
-//     // Validate request body
-//     const { error } = loginValidation.validate(req.body);
-//     if (error) {
-//       return res.status(400).json({ success: false, message: error.details[0].message });
-//     }
-//     // verify number using OTP
-     
-
-//     // Check if user exists with given contact number
-//     const user = await User.findOne({ contactNumber: req.body.contactNumber });
-
-//     if (!user) {
-//       return res.status(400).json({ success: false, message: 'Invalid contact number or password' });
-//     }
-//     else{
-//       // Create user data to return
-//       const userData = {
-//         _id: user._id,
-//         name: user.name,
-//         email: user.email,
-//         contactNumber: user.contactNumber,
-//         address: user.address,
-//         city: user.city,
-//         dateOfBirth: user.dateOfBirth,
-//         medicalHistory: user.medicalHistory
-//       };
-
-//       const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-      
-//       res.status(200).json({
-//         success: true,
-//         message: 'Login successful',
-//         user: userData,
-//         token: token
-//       });
-
-//     }
-
-//   } catch (err) {
-//     res.status(500).json({ success: false, message: 'Server Error', error: err.message });
-//   }
-// }

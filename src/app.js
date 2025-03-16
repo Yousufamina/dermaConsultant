@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import userRoutes from './routes/authRoutes.js';
+import appointmentRoutes from './routes/appointmentRoutes.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', userRoutes);
+app.use('/api/appointment', appointmentRoutes);
 app.use('/api/test', function(req,res){
       console.log("Server is up and running")
       res.send("Server is up and running")
