@@ -24,7 +24,7 @@ app.use(express.urlencoded());
 // Routes
 app.use('/api/auth', userRoutes);
 app.use('/api/appointment', appointmentRoutes);
-app.use('/api/test', function(req,res){
+app.use('/', function(req,res){
       console.log("Server is up and running")
       res.send("Server is up and running")
 });
