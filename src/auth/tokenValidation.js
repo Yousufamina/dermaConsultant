@@ -7,6 +7,7 @@ export const auth = async (req, res, next) => {
   try {
     console.log("token")
     console.log(req.header('Authorization'))
+
     // Get token from header
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
@@ -16,7 +17,9 @@ export const auth = async (req, res, next) => {
     }
     
     // Verify token
+    console.log("Called before")
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log("Called after")
     
     // Add user from payload
     req.user = { id: decoded.userId };
