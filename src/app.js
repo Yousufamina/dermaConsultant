@@ -19,6 +19,7 @@ mongoose.connect(dbURl, {
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded());
 
 // Routes
 app.use('/api/auth', userRoutes);

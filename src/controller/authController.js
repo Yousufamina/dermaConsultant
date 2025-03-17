@@ -84,7 +84,7 @@ async function sendOTP(contactNumber, otp) {
   }
 }
 
- export const request = async(req, res) =>{
+export const request = async(req, res) =>{
   try {
     
     // Validate request body
