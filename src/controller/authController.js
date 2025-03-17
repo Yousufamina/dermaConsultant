@@ -140,11 +140,12 @@ export const request = async(req, res) =>{
     const otpSent = await sendOTP(user.contactNumber, otp);
     
     if (!otpSent) {
-      return res.status(500).json({ success: false, message: 'Failed to send OTP' });
+      // return res.status(500).json({ success: false, message: 'Failed to send OTP' });
     }
     
     res.status(200).json({
       success: true,
+      otp:otp , 
       message: 'OTP sent successfully',
       expiresIn: '10 minutes'
     });
