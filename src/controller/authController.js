@@ -8,7 +8,8 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY; 
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_AUTH_TOKEN = '533528b5062dd489c56a0343e11f0809';
+// const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
 
 
@@ -70,7 +71,6 @@ function formatPhoneNumber(phoneNumber) {
 async function sendOTP(contactNumber, otp) {
   try {
     const formattedNumber = formatPhoneNumber(contactNumber);
-    console.log(TWILIO_AUTH_TOKEN)
     
     const message = await twilioClient.messages.create({
       body: `Your verification code is: ${otp}. This code will expire in 10 minutes.`,
