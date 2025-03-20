@@ -3,17 +3,25 @@ import joi from 'joi';
 import dotenv from 'dotenv';
 import twilio from 'twilio';
 import jwt from 'jsonwebtoken';
+import { Vonage } from '@vonage/server-sdk';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+import path from 'path';
+
+// Create the equivalent of __dirname for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY; 
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
-const TWILIO_AUTH_TOKEN = '533528b5062dd489c56a0343e11f0809';
-// const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
+// const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+// const TWILIO_AUTH_TOKEN = '533528b5062dd489c56a0343e11f0809';
+// // const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+// const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
+// const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
-
-const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 // Validation schema for signup
 const signupValidation = joi.object({
@@ -69,21 +77,32 @@ function formatPhoneNumber(phoneNumber) {
 
 // Function to send OTP via SMS (placeholder)
 async function sendOTP(contactNumber, otp) {
+
+  console.log("contactNumber is " + contactNumber)
+// Your Twilio account credentials
+const accountSid = 'AC0fb2b979e3c53a2da470919fb96beb4a';
+const authToken = '2035d64142b679010b82583424b94939';
+const client = twilio(accountSid, authToken);
+
+async function sendWhatsAppMessage() {
   try {
-    const formattedNumber = formatPhoneNumber(contactNumber);
-    
-    const message = await twilioClient.messages.create({
+    const message = await client.messages.create({
       body: `Your verification code is: ${otp}. This code will expire in 10 minutes.`,
-      from: TWILIO_PHONE_NUMBER,
-      to: formattedNumber
+      from: 'whatsapp:+14155238886',  // Your Twilio WhatsApp number
+      to: `whatsapp:${contactNumber}`    // Recipient's number with country code
     });
     
-    console.log(`OTP sent successfully. Message SID: ${message.sid}`);
+    console.log(`WhatsApp message sent successfully. Message SID: ${message.sid}`);
     return true;
+
   } catch (error) {
-    console.error('Error sending OTP:', error);
+    console.error('Error sending WhatsApp message:', error);
     return false;
   }
+}
+
+sendWhatsAppMessage();
+
 }
 
 export const request = async(req, res) =>{
