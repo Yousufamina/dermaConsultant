@@ -12,8 +12,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 // Your Twilio account credentials
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken =  process.env.TWILIO_AUTH_TOKEN;
+const accountSid = 'AC0fb2b979e3c53a2da470919fb96beb4a';
+const authToken = '2035d64142b679010b82583424b94939';
 const twilioClient = twilio(accountSid, authToken);
 
 async function sendConfirmation(user, appointment) {
