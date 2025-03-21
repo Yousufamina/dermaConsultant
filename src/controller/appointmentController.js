@@ -6,8 +6,8 @@ import twilio from 'twilio';
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET; 
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_ACCOUNT_SID = process.env.account_sid;
+const TWILIO_AUTH_TOKEN = process.env.auth_token;
 // const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
 const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
