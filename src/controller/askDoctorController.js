@@ -30,7 +30,7 @@ export const question = async(req, res) =>{
     // Handle file upload errors
     if (error instanceof multer.MulterError) {
         if (error.code === 'LIMIT_FILE_SIZE') {
-        return res.status(400).json({ message: 'File is too large. Maximum size is 5MB.' });
+        return res.status(400).json({ message: 'File is too large. Maximum size is 20MB.' });
         }
         return res.status(400).json({ message: 'File upload error: ' + error.message });
     }
@@ -83,7 +83,7 @@ export const answer = async(req,res) =>{
         if (!questionId) {
             return res.status(400).json({ message: 'Please provide question Id' });
         }
-        
+
         const question = await MedicalQuestion.findById(questionId);
         
         if (!question) {

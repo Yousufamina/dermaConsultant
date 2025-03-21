@@ -361,3 +361,28 @@ export const completeProfile = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server Error', error: err.message });
   }
 }
+
+export const deleteUser = async (req, res) => {
+
+  try {
+      const user = await User.findById(req.params.id)
+        .select('-__v')
+        .exec();
+      
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      else{
+        // Delete the user from the database
+        await User.findByIdAndDelete(req.params.id);
+      }
+              
+      res.json({
+        message: 'User deleted successfully'
+      })
+
+    } catch (error) {
+        console.error('Error fetching question:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
