@@ -16,11 +16,10 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET_KEY; 
-// const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
-// const TWILIO_AUTH_TOKEN = '533528b5062dd489c56a0343e11f0809';
-// // const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
 // const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
-// const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 
 // Validation schema for signup
@@ -78,15 +77,11 @@ function formatPhoneNumber(phoneNumber) {
 // Function to send OTP via SMS (placeholder)
 async function sendOTP(contactNumber, otp) {
 
-  console.log("contactNumber is " + contactNumber)
-// Your Twilio account credentials
-const accountSid = 'AC0fb2b979e3c53a2da470919fb96beb4a';
-const authToken = '2035d64142b679010b82583424b94939';
-const client = twilio(accountSid, authToken);
+console.log("contactNumber is " + contactNumber)
 
 async function sendWhatsAppMessage() {
   try {
-    const message = await client.messages.create({
+    const message = await twilioClient.messages.create({
       body: `Your verification code is: ${otp}. This code will expire in 10 minutes.`,
       from: 'whatsapp:+14155238886',  // Your Twilio WhatsApp number
       to: `whatsapp:${contactNumber}`    // Recipient's number with country code
