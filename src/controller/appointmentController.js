@@ -6,12 +6,15 @@ import twilio from 'twilio';
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET; 
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+// const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 // const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-const TWILIO_AUTH_TOKEN = '533528b5062dd489c56a0343e11f0809';
-const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
+// const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;
+// const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
-const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+// Your Twilio account credentials
+const accountSid = 'AC0fb2b979e3c53a2da470919fb96beb4a';
+const authToken = '2035d64142b679010b82583424b94939';
+const twilioClient = twilio(accountSid, authToken);
 
 async function sendConfirmation(user, appointment) {
     try {
@@ -20,12 +23,11 @@ async function sendConfirmation(user, appointment) {
       
       const message = await twilioClient.messages.create({
         body: `Hello ${user.name}, your appointment for ${appointment.service} has been scheduled successfully for ${appointmentDate} at ${appointment.timeSlot}. Thank you for booking with us!`,
-        from: TWILIO_PHONE_NUMBER,
-        to: user.contactNumber
+        from: 'whatsapp:+14155238886',  // Your Twilio WhatsApp number
+        to: `whatsapp:${user.contactNumber}`    // Recipient's number with country code
       });
       
       console.log(`message sent successfully: ${message.sid}`);
-
       console.log(`Hello ${user.name}, your appointment for ${appointment.service} has been scheduled successfully for ${appointmentDate} at ${appointment.timeSlot}. Thank you for booking with us!`);
       
       return true;
@@ -41,8 +43,8 @@ async function sendCancellationMessage(user, appointment) {
       
       const message = await twilioClient.messages.create({
         body: `Hello ${user.name}, your appointment for ${appointment.service} has been cancelled for ${appointmentDate} at ${appointment.timeSlot}. Thank you for booking with us!`,
-        from: TWILIO_PHONE_NUMBER,
-        to: user.contactNumber
+        from: 'whatsapp:+14155238886',  // Your Twilio WhatsApp number
+        to:   `whatsapp:${user.contactNumber}`    // Recipient's number with country code
       });
 
       console.log(`Hello ${user.name}, your appointment for ${appointment.service} has been cancelled for ${appointmentDate} at ${appointment.timeSlot}. Thank you for booking with us!`)

@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import userRoutes from './routes/authRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
+import askDoctorRoutes from './routes/askDoctorRoutes.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -21,9 +22,12 @@ mongoose.connect(dbURl, {
 app.use(express.json());
 app.use(express.urlencoded());
 
+app.use('/uploads', express.static('uploads'));
+
 // Routes
 app.use('/api/auth', userRoutes);
 app.use('/api/appointment', appointmentRoutes);
+app.use('/api/doctor', askDoctorRoutes);
 app.use('/', function(req,res){
       console.log("Server is up and running")
       res.send("Server is up and running")
