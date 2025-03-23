@@ -368,21 +368,21 @@ export const deleteUser = async (req, res) => {
       const user = await User.findById(req.params.id)
         .select('-__v')
         .exec();
-      
+
       if (!user) {
+        console.log("user not found to delete")
         return res.status(404).json({ message: 'User not found' });
       }
-      else{
         // Delete the user from the database
+        console.log("user found to delete")
         await User.findByIdAndDelete(req.params.id);
-      }
+        res.status(200).json({
+          message: 'User deleted successfully'
+        })
               
-      res.json({
-        message: 'User deleted successfully'
-      })
 
   } catch (error) {
-      console.error('Error fetching question:', error);
+      console.error('Error deleting user:', error);
       res.status(500).json({ message: 'Server error' });
   }
 }
@@ -392,14 +392,13 @@ export const getUsers = async(req,res) =>{
 
     const users = await User.find({isProfileComplete : true});
       
-  console.log(users)
     res.json({
       message: 'Users found successfully',
       users : users
     })
 
   } catch (error) {
-      console.error('Error fetching question:', error);
+      console.error('Error fetching use:', error);
       res.status(500).json({ message: 'Server error' });
   }
 }

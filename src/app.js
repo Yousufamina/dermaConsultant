@@ -34,7 +34,9 @@ app.use('/test', function(req,res){
       console.log("Server is up and running")
       res.send("Server is up and running")
 });
-
+app.get('/', (request, response) => {
+  response.sendStatus(200);
+});
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

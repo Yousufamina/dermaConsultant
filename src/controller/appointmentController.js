@@ -154,10 +154,10 @@ export const cancel = async(req, res) =>{
 
 export const getAllAppointments = async(req,res) => {
   try {
-    const appointments = await Appointment.find()
+    const appointments = await Appointment.find().populate('userId', 'name email contactNumber')
       .sort({ date: 1 })
       .exec();
-      
+
       res.json(appointments);
     
   } catch (error) {
@@ -195,9 +195,7 @@ export const cancelByAdmin = async(req, res) =>{
           message: 'Appointment cancellation message sent failed ',
           appointment
         });
-      }
-      
-      
+      } 
       
   } catch (error) {
       console.error('Error cancelling appointment:', error);
