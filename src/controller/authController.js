@@ -381,8 +381,25 @@ export const deleteUser = async (req, res) => {
         message: 'User deleted successfully'
       })
 
-    } catch (error) {
-        console.error('Error fetching question:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
+  } catch (error) {
+      console.error('Error fetching question:', error);
+      res.status(500).json({ message: 'Server error' });
+  }
+}
+
+export const getUsers = async(req,res) =>{
+  try {
+
+    const users = await User.find({isProfileComplete : true});
+      
+  console.log(users)
+    res.json({
+      message: 'Users found successfully',
+      users : users
+    })
+
+  } catch (error) {
+      console.error('Error fetching question:', error);
+      res.status(500).json({ message: 'Server error' });
+  }
 }

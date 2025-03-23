@@ -4,6 +4,7 @@ import userRoutes from './routes/authRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 import askDoctorRoutes from './routes/askDoctorRoutes.js';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 
@@ -18,17 +19,18 @@ mongoose.connect(dbURl, {
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('Could not connect to MongoDB', err));
 
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded());
-
+app.use(cors());
 app.use('/uploads', express.static('uploads'));
 
 // Routes
 app.use('/api/auth', userRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/doctor', askDoctorRoutes);
-app.use('/', function(req,res){
+app.use('/test', function(req,res){
       console.log("Server is up and running")
       res.send("Server is up and running")
 });

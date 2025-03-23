@@ -134,13 +134,73 @@ export const cancel = async(req, res) =>{
         // Send  Cancellation message 
         const messageSent = await sendCancellationMessage(user, appointment);
         
-        res.json({
-          message: 'Appointment cancelled successfully',
-          appointment
-        });
+        if(messageSent){
+          res.json({
+            message: 'Appointment cancellation message sent successfully ',
+            appointment
+          });
+        }else{
+          res.json({
+            message: 'Appointment cancellation message sent failed ',
+            appointment
+          });
+        }
         
     } catch (error) {
         console.error('Error cancelling appointment:', error);
         res.status(500).json({ message: 'Server error' });
     } 
+}
+
+export const getAllAppointments = async(req,res) => {
+  try {
+    const appointments = await Appointment.find()
+      .sort({ date: 1 })
+      .exec();
+      
+      res.json(appointments);
+    
+  } catch (error) {
+      console.error('Error fetching appointments:', error);
+      res.status(500).json({ message: 'Server error' });
+  } 
+}
+
+export const cancelByAdmin = async(req, res) =>{
+  try {
+      const appointment = await Appointment.findOne({ 
+        _id: req.params.id,
+      });
+      
+      if (!appointment) {
+        return res.status(404).json({ message: 'Appointment not found' });
+      }
+      
+      appointment.status = 'cancelled';
+      await appointment.save();
+
+      // Get user details for message
+      const user = await User.findById(appointment._id);
+
+      // Send  Cancellation message 
+      const messageSent = await sendCancellationMessage(user, appointment);
+
+      if(messageSent){
+        res.json({
+          message: 'Appointment cancellation message sent successfully ',
+          appointment
+        });
+      }else{
+        res.json({
+          message: 'Appointment cancellation message sent failed ',
+          appointment
+        });
+      }
+      
+      
+      
+  } catch (error) {
+      console.error('Error cancelling appointment:', error);
+      res.status(500).json({ message: 'Server error' });
+  } 
 }
