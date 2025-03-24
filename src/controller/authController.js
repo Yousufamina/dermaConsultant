@@ -366,15 +366,17 @@ export const googleLogin = async(req,res) =>{
     
     // Check if user exists in database/
    let user = await User.findOne({ googleId });
+   console.log("For Login : User exists ")
     let isNewUser = false;
     
     if (!user) {
+      console.log("For Login : User is New")
       // Create new user if not found
       user = new User({
         googleId,
         email,
         name,
-        profileCompleted: false,
+        isProfileComplete: false,
         devices: deviceId ? [{ deviceId, active: true }] : []
       });      
       await user.save();
@@ -397,7 +399,7 @@ export const googleLogin = async(req,res) =>{
     );
     
     // Return appropriate response based on profile completion status
-    if (isNewUser || !user.profileCompleted) {
+    if (isNewUser || !user.isProfileComplete) {
       return res.status(200).json({
         success: true,
         isProfileComplete: false,
