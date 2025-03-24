@@ -31,12 +31,13 @@ async function sendConfirmation(user, appointment) {
       return false;
     }
 }
+
 async function sendCancellationMessage(user, appointment) {
     try {
       // Format the date and time for the message
       const appointmentDate = new Date(appointment.date).toLocaleDateString();
       
-      const message = await twilioClient.messages.create({
+      const message = await twilioClient.messages.create({ 
         body: `Hello ${user.name}, your appointment for ${appointment.service} has been cancelled for ${appointmentDate} at ${appointment.timeSlot}. Thank you for booking with us!`,
         from: 'whatsapp:+14155238886',  // Your Twilio WhatsApp number
         to:   `whatsapp:${user.contactNumber}`    // Recipient's number with country code
@@ -173,11 +174,13 @@ export const cancelByAdmin = async(req, res) =>{
       });
       
       if (!appointment) {
+        console.log("Appointment status change to cancel not found")
         return res.status(404).json({ message: 'Appointment not found' });
       }
       
       appointment.status = 'cancelled';
       await appointment.save();
+      console.log("Appointment status change to cancelled")
 
       // Get user details for message
       const user = await User.findById(appointment._id);
@@ -201,4 +204,45 @@ export const cancelByAdmin = async(req, res) =>{
       console.error('Error cancelling appointment:', error);
       res.status(500).json({ message: 'Server error' });
   } 
+}
+
+export const completedByAdmin = async(req, res) =>{
+  try {
+      const appointment = await Appointment.findOne({ 
+        _id: req.params.id,
+      });
+      
+      if (!appointment) {
+        console.log("Appointment status change to complete not found")
+        return res.status(404).json({ message: 'Appointment not found' });
+      }
+      appointment.status = 'completed';
+      await appointment.save();
+      console.log("Appointment status change to completed")
+
+      res.json({
+        message: 'Appointment Completed successfully',
+        appointment
+      });      
+      
+  } catch (error) {
+      console.error('Error completing appointment:', error);
+      res.status(500).json({ message: 'Server error' });
+  } 
+}
+
+export const getAllAppointmentsByUserId = async(req,res) =>{
+  try {
+    console.log("api called")
+    const appointments = await Appointment.find({ userId: req.params.id })
+      .sort({ date: 1 })
+      .exec();
+      console.log(appointments)
+
+    res.status(200).json(appointments)
+    
+  } catch (error) {
+      console.error('Error fetching appointments:', error);
+      res.status(500).json({ message: 'Server error' });
+  }  
 }

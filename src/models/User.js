@@ -3,16 +3,20 @@ import mongoose from 'mongoose';
 
 // User Schema
 const userSchema = mongoose.Schema({
-      contactNumber: { type: String, required: true, unique: true },
+      googleId: {type: String, required: true, unique: true},
+      contactNumber: { type: String },
       name: { type: String },
       email: { type: String, sparse: true },
       address: { type: String },
       city: { type: String },
       dateOfBirth: { type: Date },
       medicalHistory: { type: String },
-      password: { type: String },
-      otp: { type: String, default: null },
-      otpExpires: { type: Date, default: null },
+      devices: [{
+        deviceId: String, 
+        active: { type: Boolean, default: true }
+      }],
+      // otp: { type: String, default: null },
+      // otpExpires: { type: Date, default: null },
       isProfileComplete: { type: Boolean, default: false },
       createdAt: { type: Date, default: Date.now }
   });
