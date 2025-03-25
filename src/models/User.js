@@ -4,12 +4,12 @@ import mongoose from 'mongoose';
 // User Schema
 const userSchema = mongoose.Schema({
       googleId: {type: String, required: true, unique: true},
-      contactNumber: { type: String },
       name: { type: String },
       email: { type: String, sparse: true },
       address: { type: String },
       city: { type: String },
       dateOfBirth: { type: Date },
+      contactNumber: { type: String },
       medicalHistory: { type: String },
       devices: [{
         deviceId: String, 
