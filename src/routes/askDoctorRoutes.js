@@ -3,7 +3,7 @@ import multer from 'multer';
 import path  from 'path';
 import fs from 'fs';
 import { auth } from "../auth/tokenValidation.js";
-import { question, myQuestions, questionDetail , answer} from "../controller/askDoctorController.js";
+import { question, myQuestions, questionDetail , answer , getAllQuestions , getQuestionDetail , deleteQuestionByAdmin} from "../controller/askDoctorController.js";
 
 const askDoctorRoutes = express.Router();
 
@@ -44,6 +44,9 @@ limits: {
 askDoctorRoutes.post("/question", auth ,upload.single('image') ,question);
 askDoctorRoutes.get("/my-questions", auth, myQuestions);
 askDoctorRoutes.get("/question/:id", auth, questionDetail);
-askDoctorRoutes.post("/answer", auth, answer);
+askDoctorRoutes.post("/answer", answer);
+askDoctorRoutes.get("/allQuestions", getAllQuestions);  // used by admin
+askDoctorRoutes.get("/getQuestion/:id", getQuestionDetail);   // used by admin
+askDoctorRoutes.get("/deleteQuestion/:id", deleteQuestionByAdmin);   // used by admin
 
 export default askDoctorRoutes;

@@ -40,7 +40,6 @@ export const question = async(req, res) =>{
 
 }
 
-
 export const myQuestions = async(req,res) =>{
     try {
         const questions = await MedicalQuestion.find({ userId: req.user.id })
@@ -57,6 +56,7 @@ export const myQuestions = async(req,res) =>{
 
 export const questionDetail = async(req,res) =>{
     try {
+       
         const question = await MedicalQuestion.findById(req.params.id)
           .select('-__v')
           .exec();
@@ -76,7 +76,7 @@ export const questionDetail = async(req,res) =>{
 export const answer = async(req,res) =>{
     try {
         const { answer ,questionId} = req.body;
-        
+     
         if (!answer) {
           return res.status(400).json({ message: 'Please provide an answer' });
         }
@@ -109,3 +109,58 @@ export const answer = async(req,res) =>{
     res.status(500).json({ message: 'Server error' });
     }
 }
+
+export const getAllQuestions = async(req,res) =>{
+    try {
+        const questions = await MedicalQuestion.find().populate('userId', 'name email contactNumber')
+          .select('-__v')
+          .sort({ createdAt: -1 })
+          .exec();
+        res.json(questions);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+        res.status(500).json({ message: 'Server error' });
+      }
+}
+
+export const getQuestionDetail = async(req,res) =>{
+    try {
+        const question = await MedicalQuestion.findById(req.params.id)
+          .select('-__v')
+          .exec();
+        
+        if (!question) {
+          return res.status(404).json({ message: 'Question not found' });
+        }
+                
+        res.json(question);
+
+    } catch (error) {
+    console.error('Error fetching question:', error);
+    res.status(500).json({ message: 'Server error' });
+    }
+}
+
+export const deleteQuestionByAdmin = async(req,res) =>{
+  try {
+    const question = await MedicalQuestion.findOne({ 
+      _id: req.params.id,
+    });
+    
+    if (!question) {
+      console.log("question not found")
+      return res.status(404).json({ message: 'question not found' });
+    }
+    console.log("question deleted successfully")
+    
+    await MedicalQuestion.findByIdAndDelete(req.params.id);
+    res.status(200).json({
+      message: 'question deleted successfully'
+    })
+    
+  } catch (error) {
+      console.error('Error deleting question:', error);
+      res.status(500).json({ message: 'Server error' });
+  } 
+}
+

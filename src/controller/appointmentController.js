@@ -167,6 +167,29 @@ export const getAllAppointments = async(req,res) => {
   } 
 }
 
+export const deleteByAdmin = async(req,res) =>{
+  try {
+    const appointment = await Appointment.findOne({ 
+      _id: req.params.id,
+    });
+    
+    if (!appointment) {
+      console.log("Appointment not found")
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+    console.log("Appointment deleted successfully")
+    
+    await Appointment.findByIdAndDelete(req.params.id);
+    res.status(200).json({
+      message: 'appointment deleted successfully'
+    })
+    
+  } catch (error) {
+      console.error('Error deleting appointment:', error);
+      res.status(500).json({ message: 'Server error' });
+  } 
+}
+
 export const cancelByAdmin = async(req, res) =>{
   try {
       const appointment = await Appointment.findOne({ 
