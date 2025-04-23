@@ -215,7 +215,7 @@ export const getAllAppointments = async(req,res) => {
     const appointments = await Appointment.find().populate('userId', 'name email contactNumber')
       .sort({ createdAt: -1 })
       .exec();
-
+console.log(appointments)
       res.json(appointments);
     
   } catch (error) {

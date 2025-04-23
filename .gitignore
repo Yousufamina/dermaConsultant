@@ -4,4 +4,4 @@ node_modules
 uploads
 /uploads
 # Firebase service account key
-#config/derma-consult-firebase-adminsdk-n2c9l-8fac5444c0.json
+config/derma-consult-firebase-adminsdk-n2c9l-8fac5444c0.json

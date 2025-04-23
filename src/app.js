@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import userRoutes from './routes/authRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 import askDoctorRoutes from './routes/askDoctorRoutes.js';
+import offerRoutes from './routes/offerRoutes.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 
@@ -30,6 +31,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/auth', userRoutes);
 app.use('/api/appointment', appointmentRoutes);
 app.use('/api/doctor', askDoctorRoutes);
+app.use('/api/offer', offerRoutes);
 app.use('/test', function(req,res){
       console.log("Server is up and running")
       res.send("Server is up and running")
