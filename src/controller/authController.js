@@ -524,6 +524,33 @@ export const deleteUser = async (req, res) => {
   }
 }
 
+export const deleteUserByEmail = async (req, res) => {
+
+  try {
+    const {email} = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Please provide Email' });
+    }
+    const user = await User.findOne({email : email})
+      .select('-__v')
+      .exec();
+
+    if (!user) {
+      console.log("user not found to delete")
+      return res.status(404).json({ message: 'No User found with this Email' });
+    }
+      // Delete the user from the database
+      console.log("user found to delete")
+      await User.findByIdAndDelete(user._id);
+      res.status(200).json({
+        message: 'User deleted successfully'
+      })
+  } catch (error) {
+      console.error('Error deleting user:', error);
+      res.status(500).json({ message: 'Server error' });
+  }
+}
+
 export const getUsers = async(req,res) =>{
   try {
 
