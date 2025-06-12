@@ -6,6 +6,7 @@ import askDoctorRoutes from './routes/askDoctorRoutes.js';
 import offerRoutes from './routes/offerRoutes.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import fs from 'fs';
 
 dotenv.config();
 
