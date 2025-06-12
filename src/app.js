@@ -10,6 +10,7 @@ import cors from 'cors';
 dotenv.config();
 
 const dbURl = process.env.MONGO_URI 
+import https from'https';
 const app = express();
 
 // Connect to MongoDB
@@ -39,6 +40,10 @@ app.use('/test', function(req,res){
 app.get('/', (request, response) => {
   response.sendStatus(200);
 });
+
 // Start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+https.createServer(options, app).listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
