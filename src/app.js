@@ -13,6 +13,11 @@ const dbURl = process.env.MONGO_URI
 import https from'https';
 const app = express();
 
+const options = {
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+};
+
 // Connect to MongoDB
 mongoose.connect(dbURl, {
   useNewUrlParser: true,
@@ -40,7 +45,6 @@ app.use('/test', function(req,res){
 app.get('/', (request, response) => {
   response.sendStatus(200);
 });
-
 // Start server
 const PORT = process.env.PORT || 3000;
 
