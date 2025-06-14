@@ -6,12 +6,18 @@ import askDoctorRoutes from './routes/askDoctorRoutes.js';
 import offerRoutes from './routes/offerRoutes.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import fs from 'fs';
 
 dotenv.config();
 
 const dbURl = process.env.MONGO_URI 
 import https from'https';
 const app = express();
+
+const options = {
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+};
 
 // Connect to MongoDB
 mongoose.connect(dbURl, {
@@ -43,5 +49,8 @@ app.get('/', (request, response) => {
 // Start server
 const PORT = process.env.PORT || 3000;
 
+https.createServer(options, app).listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
