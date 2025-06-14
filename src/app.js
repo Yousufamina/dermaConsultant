@@ -11,7 +11,8 @@ import https from'https';
 
 dotenv.config();
 
-const dbURl = process.env.MONGO_URI;
+// const dbURl = process.env.MONGO_URI;
+const dbURl = "mongodb+srv://admin:O7U1ZG7GLYzHIB3R@derma-consltant-testing.o7z5h.mongodb.net/";
 const app = express();
 
 const options = {
