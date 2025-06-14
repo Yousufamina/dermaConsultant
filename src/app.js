@@ -7,11 +7,11 @@ import offerRoutes from './routes/offerRoutes.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import fs from 'fs';
+import https from'https';
 
 dotenv.config();
 
-const dbURl = process.env.MONGO_URI 
-import https from'https';
+const dbURl = process.env.MONGO_URI;
 const app = express();
 
 const options = {
