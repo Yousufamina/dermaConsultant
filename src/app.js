@@ -50,8 +50,8 @@ app.get('/', (request, response) => {
 // Start server
 const PORT = process.env.PORT || 3000;
 
-https.createServer(options, app).listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// https.createServer(options, app).listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
 
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
