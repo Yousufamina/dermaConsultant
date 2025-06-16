@@ -6,7 +6,8 @@ import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET_KEY; 
+// const JWT_SECRET = process.env.JWT_SECRET_KEY; 
+const JWT_SECRET = "dermaconsultproject!@#$%" ; 
 const TWILIO_ACCOUNT_SID = process.env.account_sid;
 const TWILIO_AUTH_TOKEN = process.env.auth_token;
 // const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER;

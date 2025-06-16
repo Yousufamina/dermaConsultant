@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
-const JWT_SECRET = process.env.JWT_SECRET_KEY ; 
+// const JWT_SECRET = process.env.JWT_SECRET_KEY ; 
+const JWT_SECRET = "dermaconsultproject!@#$%" ; 
 
 // ==================== AUTH MIDDLEWARE ====================
 
